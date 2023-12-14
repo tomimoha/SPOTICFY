@@ -91,7 +91,7 @@ const updateArtista = (req, res) => {
             return res.status(500).json({msg:"Error en la base de datos"});
         }
 
-        conn.query("UPDATE artistas SET nombre = ?", [nombre], (err, result) => {
+        conn.query('UPDATE artistas SET nombre = ?', [nombre], (err, result) => {
             if(err)
             {
                 console.error(err);
@@ -115,7 +115,7 @@ const deleteArtista = (req, res) => {
             return res.status(500).json({msg:"Error en la base de datos"});
         }
 
-        conn.query("DELETE FROM artistas WHERE id = ?", [id], (err, result) => {
+        conn.query('DELETE FROM artistas WHERE id = ?', [id], (err, result) => {
             if(err)
             {
                 console.error(err);
@@ -156,14 +156,18 @@ const getCancionesByArtista = (req, res) => {
             return res.status(500).json({msg:"Error en la base de datos"});
         } 
 
-        conn.query('SELECT * FROM canciones WHERE album = ?', [album], (err, result) => {
+        const album = req.params;
+        if(result > 0)
+        {
+            conn.query('SELECT * FROM canciones WHERE album = ?', [album], (err, result) => {
             if (err) 
             {
                 console.error(err);
                 return res.status(500).json({msg:"Error en la base de datos"});
             }
             return res.status(200).json(result);
-        });
+            });
+        }  
     });
 };
 
