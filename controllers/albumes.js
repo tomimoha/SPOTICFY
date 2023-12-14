@@ -64,14 +64,14 @@ const createAlbum = (req, res) => {
         }
     */
 
-        const nombre = req.body;
-        conn.query('INSERT INTO albumes (nombre) VALUES (?)', [nombre], (err, response) => {
+        const album = req.body;
+        conn.query('INSERT INTO albumes (nombre, artista) VALUES (?, ?)', [album.nombre, album.artista], (err, response) => {
         if (err)
         {
             console.error(err);
             return res.status(500).json({msg:"Error en la base de datos"});
         }
-        return res.status(200).json(response);
+        return res.status(200).json(album);
     }) 
 };
 
@@ -87,7 +87,7 @@ const updateAlbum = (req, res) => {
     */
 
         const id = req.params;
-        const nombre = req.body;
+        const album = req.body;
         conn.query('SELECT * FROM albumes WHERE id = ?', [id], (err, result) => {
         if(err)
         {
@@ -95,22 +95,13 @@ const updateAlbum = (req, res) => {
             return res.status(500).json({msg:"Error en la base de datos"});
         }
 
-        conn.query("UPDATE albumes SET nombre = ?", [nombre], (err, result) => {
+        conn.query("UPDATE albumes SET nombre = ?, artista = ?", [album.nombre, album.artista], (err, result) => {
             if(err)
             {
                 console.error(err);
                 return res.status(500).json({msg:"Error al actualizar el nombre"});
             }
-            return res.status(200).json(nombre);
-        })
-
-        conn.query("UPDATE albumes SET artista = ?", [artista], (err, result) => {
-            if(err)
-            {
-                console.error(err);
-                return res.status(500).json({msg:"Error al actualizar el nombre"});
-            }
-            return res.status(200).json(artista);
+            return res.status(200).json(album);
         })
     })
 };
@@ -143,8 +134,8 @@ const getCancionesByAlbum = (req, res) => {
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la misma forma que getCanciones
 
-    const albumes = req.params;
-    conn.query('SELECT canciones FROM albumes WHERE artista = ?', [artista], (err, result) => {
+    const album = req.params;
+    conn.query('SELECT * FROM canciones WHERE album = ?', [album], (err, result) => {
         if (err) 
         {
             console.error(err);

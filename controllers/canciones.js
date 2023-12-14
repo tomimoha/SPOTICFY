@@ -25,6 +25,15 @@ const getCanciones = (_, res) => {
             ...
         ]
     */
+
+        conn.query('SELECT * FROM canciones', (err, result) => {
+            if (err) 
+            {
+                console.error(err);
+                return res.status(500).json({msg:"Error en la base de datos"});
+            }
+            return res.status(200).json(result);
+        });
 };
 
 const getCancion = (req, res) => {
@@ -41,6 +50,16 @@ const getCancion = (req, res) => {
             "reproducciones": "Reproducciones de la canción"
         }
     */
+
+        const id = req.params.id;
+        conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
+        if (err) 
+        {
+            console.error(err);
+            return res.status(500).json({msg:"Error en la base de datos"});
+        }
+        return res.status(200).json(result);
+    });
 };
 
 const createCancion = (req, res) => {
@@ -55,6 +74,16 @@ const createCancion = (req, res) => {
         }
     */
     // (Reproducciones se inicializa en 0)
+
+    const cancion = req.body;
+    conn.query('INSERT INTO canciones (nombre, album, duracion) VALUES (?, ?, ?)', [cancion.nombre, cancion.album, cancion.duracion], (err, response) => {
+    if (err)
+    {
+        console.error(err);
+        return res.status(500).json({msg:"Error en la base de datos"});
+    }
+    return res.status(200).json(cancion);
+}) 
 };
 
 const updateCancion = (req, res) => {
@@ -69,16 +98,53 @@ const updateCancion = (req, res) => {
         }
     */
     // (Reproducciones no se puede modificar con esta consulta)
+
+        const id = req.body;
+        conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
+        if(err)
+        {
+            console.error(err);
+            return res.status(500).json({msg:"Error en la base de datos"});
+        }
+
+        conn.query("UPDATE canciones SET nombre = ?, album = ?, duracion = ?", [cancion.nombre, cancion.album, cancion.duracion], (err, result) => {
+            if(err)
+            {
+                console.error(err);
+                return res.status(500).json({msg:"Error al actualizar el nombre"});
+            }
+            return res.status(200).json(cancion);
+        })
+    })
 };
 
 const deleteCancion = (req, res) => {
     // Completar con la consulta que elimina una canción
     // Recordar que los parámetros de una consulta DELETE se encuentran en req.params
+
+    const id = req.params;
+    conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
+        if(err)
+        {
+            console.error(err);
+            return res.status(500).json({msg:"Error en la base de datos"});
+        }
+
+        conn.query("DELETE FROM canciones WHERE id = ?", [id], (err, result) => {
+            if(err)
+            {
+                console.error(err);
+                return res.status(500).json({msg:"Error al eliminar la cancion"});
+            }
+            return res.status(200).json({msg:"La cancion se elimino correctamente"});
+        })
+    })
 };
 
 const reproducirCancion = (req, res) => {
     // Completar con la consulta que aumenta las reproducciones de una canción
     // En este caso es una consulta PUT, pero no recibe ningún parámetro en el body, solo en los params
+
 };
 
 module.exports = {
