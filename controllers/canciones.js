@@ -26,6 +26,7 @@ const getCanciones = (_, res) => {
         ]
     */
 
+<<<<<<< HEAD
     conn.query('SELECT * FROM canciones', (err, result) => {
         if (err) {
             console.error(err);
@@ -33,6 +34,16 @@ const getCanciones = (_, res) => {
         }
         return res.status(200).json(result);
     });
+=======
+        conn.query('SELECT * FROM canciones', (err, result) => {
+            if (err) 
+            {
+                console.error(err);
+                return res.status(500).json({msg:"Error en la base de datos"});
+            }
+            return res.status(200).json(result);
+        });
+>>>>>>> 66639d28bf88597d49e455592c769b96f842ccd3
 };
 
 const getCancion = (req, res) => {
@@ -50,11 +61,20 @@ const getCancion = (req, res) => {
         }
     */
 
+<<<<<<< HEAD
     const id = req.params.id;
     conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ msg: "Error en la base de datos" });
+=======
+        const id = req.params.id;
+        conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
+        if (err) 
+        {
+            console.error(err);
+            return res.status(500).json({msg:"Error en la base de datos"});
+>>>>>>> 66639d28bf88597d49e455592c769b96f842ccd3
         }
         return res.status(200).json(result);
     });
@@ -75,12 +95,22 @@ const createCancion = (req, res) => {
 
     const cancion = req.body;
     conn.query('INSERT INTO canciones (nombre, album, duracion, reproducciones) VALUES (?, ?, ?, 0)', [cancion.nombre, cancion.album, cancion.duracion], (err, response) => {
+<<<<<<< HEAD
         if (err) {
             console.error(err);
             return res.status(500).json({ msg: "Error en la base de datos" });
         }
         return res.status(200).json(cancion);
     })
+=======
+    if (err)
+    {
+        console.error(err);
+        return res.status(500).json({msg:"Error en la base de datos"});
+    }
+    return res.status(200).json(cancion);
+}) 
+>>>>>>> 66639d28bf88597d49e455592c769b96f842ccd3
 };
 
 const updateCancion = (req, res) => {
@@ -96,6 +126,7 @@ const updateCancion = (req, res) => {
     */
     // (Reproducciones no se puede modificar con esta consulta)
 
+<<<<<<< HEAD
     const id = req.params;
     const cancion = req.body;
     conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
@@ -108,6 +139,22 @@ const updateCancion = (req, res) => {
             if (err) {
                 console.error(err);
                 return res.status(500).json({ msg: "Error al actualizar el nombre" });
+=======
+        const id = req.params;
+        const cancion = req.body;
+        conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
+        if(err)
+        {
+            console.error(err);
+            return res.status(500).json({msg:"Error en la base de datos"});
+        }
+
+        conn.query("UPDATE canciones SET nombre = ?, album = ?, duracion = ?", [cancion.nombre, cancion.album, cancion.duracion], (err, result) => {
+            if(err)
+            {
+                console.error(err);
+                return res.status(500).json({msg:"Error al actualizar el nombre"});
+>>>>>>> 66639d28bf88597d49e455592c769b96f842ccd3
             }
             return res.status(200).json(cancion);
         })
@@ -120,6 +167,7 @@ const deleteCancion = (req, res) => {
 
     const id = req.params;
     conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
+<<<<<<< HEAD
         if (err) {
             console.error(err);
             return res.status(500).json({ msg: "Error en la base de datos" });
@@ -131,6 +179,21 @@ const deleteCancion = (req, res) => {
                 return res.status(500).json({ msg: "Error al eliminar la cancion" });
             }
             return res.status(200).json({ msg: "La cancion se elimino correctamente" });
+=======
+        if(err)
+        {
+            console.error(err);
+            return res.status(500).json({msg:"Error en la base de datos"});
+        }
+
+        conn.query("DELETE FROM canciones WHERE id = ?", [id], (err, result) => {
+            if(err)
+            {
+                console.error(err);
+                return res.status(500).json({msg:"Error al eliminar la cancion"});
+            }
+            return res.status(200).json({msg:"La cancion se elimino correctamente"});
+>>>>>>> 66639d28bf88597d49e455592c769b96f842ccd3
         })
     })
 };
@@ -138,6 +201,7 @@ const deleteCancion = (req, res) => {
 const reproducirCancion = (req, res) => {
     // Completar con la consulta que aumenta las reproducciones de una canción
     // En este caso es una consulta PUT, pero no recibe ningún parámetro en el body, solo en los params
+<<<<<<< HEAD
 
     const id = req.params;
     conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
@@ -160,6 +224,37 @@ const reproducirCancion = (req, res) => {
         }
     });
 };
+=======
+    
+    const reproducirCancion = (req, res) => {
+        // Completar con la consulta que aumenta las reproducciones de una canción
+        // En este caso es una consulta PUT, pero no recibe ningún parámetro en el body, solo en los params
+        
+        const id = req.params.id;
+        conn.query('SELECT * FROM canciones WHERE id = ?', [id], (err, result) => {
+            if (err) 
+            {
+                console.error(err);
+                return res.status(500).json({msg: "Error en la base de datos"});
+            }
+    
+            if (result.length > 0) 
+            {
+                conn.query('UPDATE canciones SET reproducciones = reproducciones + 1 WHERE id = ?', [id], (err, response) => {
+                    if (err) 
+                    {
+                        console.error(err);
+                        return res.status(500).json({msg: "Error al actualizar las reproducciones"});
+                    }
+                    return res.status(200).json({msg: "Reproducción registrada"});
+                });
+            }
+            return res.status(404).json({msg: "Canción no encontrada"});
+        
+        });
+    };
+}; 
+>>>>>>> 66639d28bf88597d49e455592c769b96f842ccd3
 
 module.exports = {
     getCanciones,
