@@ -148,16 +148,14 @@ const getCancionesByArtista = (req, res) => {
     // Recordar que los parámetros de una consulta GET se encuentran en req.params
     // Deberían devolver los datos de la misma forma que getCanciones
 
-    const artistas = req.params;
-    conn.query('SELECT * FROM albumes WHERE artistas = ?', [artistas], (err, result) => {
+    const artista = req.params;
+    conn.query('SELECT * FROM albumes WHERE artista = ?', [artista], (err, result) => {
         if (err) 
         {
             console.error(err);
             return res.status(500).json({msg:"Error en la base de datos"});
         } 
-
-        const album = req.params;
-        if(result > 0)
+        else if(result > 0)
         {
             conn.query('SELECT * FROM canciones WHERE album = ?', [album], (err, result) => {
             if (err) 
